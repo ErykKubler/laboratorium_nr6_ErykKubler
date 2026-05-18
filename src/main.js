@@ -1,42 +1,42 @@
 import './style.css'
 import dayjs from 'dayjs'
 
-const form = document.getElementById('motorcycle-form');
-const purchaseDateInput = document.getElementById('purchase-date');
-const dialog = document.getElementById('moto-dialog');
-const dialogContent = document.getElementById('moto-dialog-content');
-const closeDialogBtn = document.getElementById('close-moto-dialog');
+const form = document.getElementById('birthday-form');
+const birthDateInput = document.getElementById('birth-date');
+const dialog = document.getElementById('birthday-dialog');
+const dialogContent = document.getElementById('birthday-dialog-content');
+const closeDialogBtn = document.getElementById('close-birthday-dialog');
 
 form.addEventListener('submit', (e) => {
   e.preventDefault();
   
-  const inputDateStr = purchaseDateInput.value;
+  const inputDateStr = birthDateInput.value;
   if (!inputDateStr) return;
 
   const today = dayjs();
-  const purchaseDate = dayjs(inputDateStr);
+  const birthDate = dayjs(inputDateStr);
 
-  const daysSincePurchase = today.diff(purchaseDate, 'days');
-  const isAnniversaryToday = today.month() === purchaseDate.month() && today.date() === purchaseDate.date();
+  const daysSinceBirth = today.diff(birthDate, 'days');
+  const isBirthdayToday = today.month() === birthDate.month() && today.date() === birthDate.date();
 
-  let nextAnniversary = purchaseDate.year(today.year());
+  let nextBirthday = birthDate.year(today.year());
   
-  if (nextAnniversary.isBefore(today, 'day')) {
-    nextAnniversary = nextAnniversary.add(1, 'year');
+  if (nextBirthday.isBefore(today, 'day')) {
+    nextBirthday = nextBirthday.add(1, 'year');
   }
 
-  const daysToNextAnniversary = nextAnniversary.diff(today, 'days');
-  const weeksToNextAnniversary = Math.ceil(daysToNextAnniversary / 7);
+  const daysToNextBirthday = nextBirthday.diff(today, 'days');
+  const weeksToNextBirthday = Math.ceil(daysToNextBirthday / 7);
 
-  let htmlContent = `<p>Twoja maszyna jest z Tobą już: <span class="text-xl block font-black text-slate-900">${daysSincePurchase} dni</span></p>`;
+  let htmlContent = `<p>Od Twoich narodzin minęło już: <span class="text-xl block font-black text-slate-900">${daysSinceBirth} dni</span></p>`;
 
-  if (isAnniversaryToday) {
-    alert("Szerokiej drogi! Dokładnie dzisiaj mija kolejna rocznica zakupu Twojej maszyny! Lewa w górę! 🏍️💨");
+  if (isBirthdayToday) {
+    alert("Wszystkiego najlepszego z okazji urodzin! 🎂🎉");
   } else {
-    if (daysToNextAnniversary > 0 && daysToNextAnniversary <= 7) {
-      htmlContent += `<p class="text-green-700 animate-pulse mt-2 text-sm">Rocznica zakupu motocykla w tym tygodniu! Szykuj kombinezon!</p>`;
+    if (daysToNextBirthday > 0 && daysToNextBirthday <= 7) {
+      htmlContent += `<p class="text-green-700 animate-pulse mt-2 text-sm">Masz urodziny w tym tygodniu! Szykuj się na świętowanie!</p>`;
     } else {
-      htmlContent += `<p class="text-slate-700 text-xs mt-2">Do kolejnej rocznicy zakupu pozostało: ${weeksToNextAnniversary} tygodni.</p>`;
+      htmlContent += `<p class="text-slate-700 text-xs mt-2">Do najbliższych urodzin pozostało: ${weeksToNextBirthday} tygodni.</p>`;
     }
   }
 
