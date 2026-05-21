@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Kalkulator Urodzinowy</title>
+    <link href="/src/style.css" rel="stylesheet" />
   </head>
   <body class="bg-slate-900 text-slate-100 flex flex-col items-center justify-center min-h-screen p-4">
 
@@ -25,14 +26,14 @@
         >
         <button 
           type="submit" 
-          class="bg-blue-300 hover:bg-blue-400 text-slate-900 font-bold p-4 rounded-md transition-colors uppercase tracking-wider"
+          class="bg-button-submit hover:bg-blue-400 text-slate-900 font-bold p-4 rounded-md transition-colors uppercase tracking-wider"
         >
           Oblicz statystyki
         </button>
       </form>
     </div>
 
-    <dialog id="birthday-dialog" class="bg-gray-200 text-red-600 p-6 rounded-lg shadow-2xl relative max-w-sm w-full backdrop:bg-black/60">
+    <dialog id="birthday-dialog" class="bg-dialog-bg text-dialog-text p-6 rounded-lg shadow-2xl relative max-w-sm w-full backdrop:bg-black/60">
       <button id="close-birthday-dialog" class="absolute top-2 right-4 text-slate-700 hover:text-slate-900 font-bold text-2xl">
         &times;
       </button>
