@@ -1,55 +1,84 @@
 import './style.css'
 import dayjs from 'dayjs'
 
-const form = document.getElementById('birthday-form');
-const birthDateInput = document.getElementById('birth-date');
-const dialog = document.getElementById('birthday-dialog');
-const dialogContent = document.getElementById('birthday-dialog-content');
-const closeDialogBtn = document.getElementById('close-birthday-dialog');
+const SUPABASE_URL = "https://zvsaklkuxbgypagazmvm.supabase.co/rest/v1/article";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp2c2FrbGt1eGJneXBhZ2F6bXZtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAyMzUxMzMsImV4cCI6MjA5NTgxMTEzM30.TyUv2xNqWow4h2K-CZpcuvM-TMOZwUQA0jDuLtVy1bQ";
+const HEADERS = {
+  "apikey": SUPABASE_KEY,
+  "Authorization": `Bearer ${SUPABASE_KEY}`,
+  "Content-Type": "application/json"
+};
 
-form.addEventListener('submit', (e) => {
-  e.preventDefault();
-  
-  const inputDateStr = birthDateInput.value;
-  if (!inputDateStr) return;
-
-  const today = dayjs();
-  const birthDate = dayjs(inputDateStr);
-
-  const daysSinceBirth = today.diff(birthDate, 'days');
-  const isBirthdayToday = today.month() === birthDate.month() && today.date() === birthDate.date();
-
-  let nextBirthday = birthDate.year(today.year());
-  
-  if (nextBirthday.isBefore(today, 'day')) {
-    nextBirthday = nextBirthday.add(1, 'year');
-  }
-
-  const daysToNextBirthday = nextBirthday.diff(today, 'days');
-  const weeksToNextBirthday = Math.ceil(daysToNextBirthday / 7);
-
-  let htmlContent = `<p>Od Twoich narodzin minęło już: <span class="text-xl block font-black text-slate-900">${daysSinceBirth} dni</span></p>`;
-
-  if (isBirthdayToday) {
-    alert("Wszystkiego najlepszego z okazji urodzin! 🎂🎉");
-  } else {
-    if (daysToNextBirthday > 0 && daysToNextBirthday <= 7) {
-      htmlContent += `<p class="text-green-700 animate-pulse mt-2 text-sm">Masz urodziny w tym tygodniu! Szykuj się na świętowanie!</p>`;
-    } else {
-      htmlContent += `<p class="text-slate-700 text-xs mt-2">Do najbliższych urodzin pozostało: ${weeksToNextBirthday} tygodni.</p>`;
+async function fetchArticles(sortBy = 'created_at.desc') {
+  try {
+    const response = await fetch(`${SUPABASE_URL}?order=${sortBy}`, { headers: HEADERS });
+    if (!response.ok) throw new Error("Błąd podczas pobierania danych.");
+    
+    const articles = await response.json();
+    const listElement = document.getElementById('articles-list');
+    
+    if (articles.length === 0) {
+      listElement.innerHTML = '<p class="text-slate-400 text-center italic">Brak artykułów w bazie danych.</p>';
+      return;
     }
+
+    listElement.innerHTML = '';
+
+    articles.forEach(article => {
+      const formattedDate = dayjs(article.created_at).format('DD-MM-YYYY HH:mm');
+
+      listElement.innerHTML += `
+        <div class="bg-slate-800 p-6 rounded-lg shadow-xl border border-slate-700 transition-all hover:border-slate-600">
+          <h2 class="text-2xl font-bold text-blue-400 mb-1">${article.title}</h2>
+          <h3 class="text-sm text-slate-400 italic mb-3">${article.subtitle}</h3>
+          <div class="text-xs text-slate-500 mb-4 flex justify-between bg-slate-900/50 p-2 rounded">
+            <span>✍️ Autor: <strong class="text-slate-300">${article.author}</strong></span>
+            <span>📅 Data: <strong class="text-slate-300">${formattedDate}</strong></span>
+          </div>
+          <p class="text-slate-200 whitespace-pre-wrap leading-relaxed">${article.content}</p>
+        </div>
+      `;
+    });
+  } catch (error) {
+    document.getElementById('articles-list').innerHTML = `
+      <p class="text-red-400 text-center font-semibold">Nie udało się załadować artykułów. Sprawdź konfigurację API Supabase.</p>
+    `;
+    console.error(error);
   }
+}
 
-  dialogContent.innerHTML = htmlContent;
-  dialog.showModal();
-});
+document.getElementById('article-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
 
-closeDialogBtn.addEventListener('click', () => {
-  dialog.close();
-});
+  const newArticle = {
+    title: document.getElementById('title-input').value,
+    subtitle: document.getElementById('subtitle-input').value,
+    author: document.getElementById('author-input').value,
+    content: document.getElementById('content-input').value,
+    created_at: document.getElementById('date-input').value
+  };
 
-dialog.addEventListener('click', (e) => {
-  if (e.target === dialog) {
-    dialog.close();
+  try {
+    const response = await fetch(SUPABASE_URL, {
+      method: 'POST',
+      headers: HEADERS,
+      body: JSON.stringify(newArticle)
+    });
+
+    if (!response.ok) throw new Error("Błąd podczas zapisywania artykułu.");
+
+    document.getElementById('article-form').reset();
+    const currentSort = document.getElementById('sort-select').value;
+    fetchArticles(currentSort);
+
+  } catch (error) {
+    alert("Wystąpił problem z dodaniem artykułu. Sprawdź połączenie z bazą.");
+    console.error(error);
   }
 });
+
+document.getElementById('sort-select').addEventListener('change', (e) => {
+  fetchArticles(e.target.value);
+});
+
+fetchArticles();

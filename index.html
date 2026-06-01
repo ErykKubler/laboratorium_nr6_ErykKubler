@@ -3,44 +3,70 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Kalkulator Urodzinowy</title>
+    <title>Panel Artykułów - Lab 6</title>
     <link href="/src/style.css" rel="stylesheet" />
   </head>
-  <body class="bg-slate-900 text-slate-100 flex flex-col items-center justify-center min-h-screen p-4">
+  <body class="bg-slate-900 text-slate-100 min-h-screen p-4 flex flex-col items-center justify-start">
 
-    <div class="bg-slate-800 p-8 rounded-lg shadow-2xl border border-slate-700 w-full max-w-md">
-      
-      <h1 class="text-2xl font-bold text-primary mb-6 text-center uppercase tracking-wide">
-        Kalkulator Urodzin
+    <div class="w-full max-w-3xl my-6">
+      <h1 class="text-3xl font-bold text-center uppercase tracking-wide mb-8 text-blue-400">
+        Portal Artykułów (Lab 6)
       </h1>
       
-      <form id="birthday-form" class="flex flex-col gap-4">
-        <label for="birth-date" class="font-medium text-slate-300 text-sm">
-          Wybierz datę swoich urodzin:
-        </label>
-        <input 
-          type="date" 
-          id="birth-date" 
-          required 
-          class="bg-slate-700 border border-slate-600 p-2 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-300"
-        >
-        <button 
-          type="submit" 
-          class="bg-button-submit hover:bg-blue-400 text-slate-900 font-bold p-4 rounded-md transition-colors uppercase tracking-wider"
-        >
-          Oblicz statystyki
-        </button>
-      </form>
-    </div>
-
-    <dialog id="birthday-dialog" class="bg-dialog-bg text-dialog-text p-6 rounded-lg shadow-2xl relative max-w-sm w-full backdrop:bg-black/60">
-      <button id="close-birthday-dialog" class="absolute top-2 right-4 text-slate-700 hover:text-slate-900 font-bold text-2xl">
-        &times;
-      </button>
-      
-      <div id="birthday-dialog-content" class="mt-4 space-y-2 text-center font-bold uppercase tracking-wide">
+      <div class="flex justify-end mb-6">
+        <div class="w-full max-w-xs">
+          <label for="sort-select" class="block text-sm font-medium text-slate-400 mb-1">Sortuj artykuły:</label>
+          <select id="sort-select" class="block w-full bg-slate-800 border border-slate-700 rounded-md text-white p-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option value="created_at.desc">Najnowsze od góry</option>
+            <option value="created_at.asc">Najstarsze od góry</option>
+            <option value="title.asc">Tytułami alfabetycznie</option>
+          </select>
+        </div>
       </div>
-    </dialog>
+
+      <div id="articles-list" class="space-y-6 mb-12">
+        <p class="text-slate-400 text-center italic">Pobieranie danych z bazy Supabase...</p>
+      </div>
+
+      <div class="bg-slate-800 p-8 rounded-lg shadow-2xl border border-slate-700 w-full">
+        <h2 class="text-xl font-bold mb-6 uppercase tracking-wide text-slate-200 border-b border-slate-700 pb-2">
+          Dodaj nowy artykuł
+        </h2>
+        
+        <form id="article-form" class="flex flex-col gap-4">
+          <div>
+            <label for="title-input" class="block text-sm font-medium text-slate-300 mb-1">Tytuł:</label>
+            <input type="text" id="title-input" required class="w-full bg-slate-700 border border-slate-600 p-2 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+          </div>
+
+          <div>
+            <label for="subtitle-input" class="block text-sm font-medium text-slate-300 mb-1">Podtytuł:</label>
+            <input type="text" id="subtitle-input" required class="w-full bg-slate-700 border border-slate-600 p-2 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label for="author-input" class="block text-sm font-medium text-slate-300 mb-1">Autor:</label>
+              <input type="text" id="author-input" required class="w-full bg-slate-700 border border-slate-600 p-2 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+
+            <div>
+              <label for="date-input" class="block text-sm font-medium text-slate-300 mb-1">Data utworzenia (created_at):</label>
+              <input type="datetime-local" id="date-input" required class="w-full bg-slate-700 border border-slate-600 p-2 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+          </div>
+
+          <div>
+            <label for="content-input" class="block text-sm font-medium text-slate-300 mb-1">Treść artykułu:</label>
+            <textarea id="content-input" rows="5" required class="w-full bg-slate-700 border border-slate-600 p-2 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+          </div>
+
+          <button type="submit" class="bg-blue-500 hover:bg-blue-400 text-slate-900 font-bold p-4 rounded-md transition-colors uppercase tracking-wider mt-2">
+            Opublikuj artykuł do Supabase
+          </button>
+        </form>
+      </div>
+    </div>
 
     <script type="module" src="/src/main.js"></script>
   </body>
